@@ -1,0 +1,69 @@
+---
+title: "BCB420 Assignment 1"
+subtitle: "Dataset Selection and Initial Processing"
+author: "Isaiah Hazelwood"
+date: "`r Sys.Date()`"
+output: 
+  html_notebook:
+    toc: true
+    toc_depth: 2
+bibliography: A1_references.bib
+csl: nature.csl
+---
+
+```{r echo = FALSE}
+# Load libraries, to notify the user if one is not installed
+library(BiocManager)
+library(GEOquery)
+```
+
+# Dataset Background
+This section outlines how I selected the dataset and basic information about it.
+
+## Selecting the Dataset
+As a starting point, I chose to look for a dataset relating to prostate cancer. I searched GEO for that term, which produced 49250 results. To look at the most relevant results, I filtered for entries uploaded within the last 4 years (uploaded after January 1, 2020), containing a supplementary `.txt` file, with data on humans (from the species *Homo sapiens*), collected using expression by high throughput sequencing (to select bulk or single-cell RNA sequencing), and containing at least 6 samples. Adding these restrictions produced 513 results, and I looked through these in reverse chronological order to find datasets with high quality, an associated publication, and an interesting premise. I chose the dataset associated with the publication [Structure-guided design of a selective inhibitor of the methyltransferase KMT9 with cellular activity](https://www.ncbi.nlm.nih.gov/pubmed/38167811), which has [GEO ID GSE235595](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE235595), as it has a large number of samples across multiple experimental conditions and an experiment incorporating my secondary interest of structural biology.
+
+## Dataset Basic Information
+
+The experiment associated with [GEO ID GSE235595](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE235595) examined a small molecule inhibitor for lysine methyltransferase 9 (KMT9), an enzyme which modifies DNA to increase expression of genes involved in tumor cell proliferation. The researchers tested the inhibitor (KMI169) by measuring RNA expression in prostate cancer cells with no treatment, prostate cancer cells treated with KMI169, and prostate cancer cells treated with an modified inactive version of KMI169 as a control. There are 9 total samples from 3 replicates across these 3 conditions. 
+
+TODO: Figure
+
+Below, I use `GEOquery` to access metadata information on this dataset and the platform used to produce it.
+
+```{r}
+geoId <- "GSE235595"
+geoEntry <- GEOquery::getGEO(geoId, GSEMatrix = FALSE)
+geoPlatformID <- geoEntry@header$platform_id
+geoPlatform <- GEOquery::Meta(GEOquery::getGEO(geoPlatformID))
+```
+
+The dataset has GEO ID `r geoEntry@header$geo_accession` was submitted on `r geoEntry@header$submission_date` and last updated on `r geoEntry@header$last_update_date`. Its experimental design is described as:
+`r geoEntry@header$overall_design` and was performed on platform ID `r geoEntry@header$platform_id`. That platform was submitted on `r geoPlatform$submission_date`, last updated on `r geoPlatform$last_update_date`, concerns the organism `r geoPlatform$organism`, and uses the technology `r geoPlatform$technology` to measure gene expression.
+
+
+# Cleaning and Mapping the Data
+
+
+# Applying Normalization
+
+
+# Conclusion
+
+
+## Links for Marking
+[Why is this dataset of interest to you?](#selecting-the-dataset)
+
+[What are the control and test conditions of the dataset](#dataset-basic-information)
+
+[How many samples are in each of the conditions of the dataset](#dataset-basic-information)
+
+[Were there expression values that were not unique for specific genes? How did you handle these?](#to-do)
+
+[Were there expression values that could not be mapped to current HUGO symbols?](#to-do)
+
+[Were there any outliers in your dataset? How were they handled in the originating paper? How many outliers were removed?](#to-do)
+
+[How did you handle replicates?](#to-do)
+
+[What is the final coverage of your dataset?](#to-do)
